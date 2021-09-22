@@ -26,6 +26,9 @@ stringData:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  annotations:
+    configmap.reloader.stakater.com/reload: cloudflarerecord-controller
+    secret.reloader.stakater.com/reload: cloudflarerecord-controller
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/name: cloudflarerecord
@@ -48,7 +51,7 @@ spec:
       - env:
         - name: NAMESPACE
           valueFrom:
-            configMapRef:
+            configMapKeyRef:
               name: cloudflarerecord-controller
               key: namespace
         - name: TOKEN
