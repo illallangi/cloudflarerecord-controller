@@ -1,0 +1,24 @@
+data:
+  config.yaml: |-
+    api: https://api.cloudflare.com/client/v4/
+    logLevel: info
+    auth:
+      scopedToken: kzDe1cqHkMsOY9lqdh2QtkX3pv9eyELUSHwONg85
+    domains:
+{% for ns in dns_resource_record_idx %}
+{% for obj in dns_resource_record_idx[ns] %}
+    # CloudFlareRecord {{ ns }}\{{ obj['metadata']['name'] }}
+{% for record in obj.spec %}
+    - name: {{ record.fqdn }}
+      type: A
+      proxied: false
+      create: true
+      zoneId: {{ record.zoneID }}
+{% endfor %}
+{% endfor %}
+{% endfor %}
+    ipv4:
+    - type: json
+      url: https://api.ipify.org?format=json
+      fields:
+      - ip

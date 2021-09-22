@@ -1,0 +1,4 @@
+Jinja2
+kopf
+kubernetes
+more_itertools
