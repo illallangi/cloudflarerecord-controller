@@ -3,7 +3,7 @@ data:
     api: https://api.cloudflare.com/client/v4/
     logLevel: info
     auth:
-      scopedToken: kzDe1cqHkMsOY9lqdh2QtkX3pv9eyELUSHwONg85
+      scopedToken: {{ token }}
     domains:
 {% for ns in dns_resource_record_idx %}
 {% for obj in dns_resource_record_idx[ns] %}

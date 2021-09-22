@@ -75,6 +75,10 @@ async def rpz_config_map(**kwargs):
     namespace = os.environ.get("NAMESPACE")
     if namespace is None:
         raise kopf.PermanentError("NAMESPACE not defined")
+    
+    token = os.environ.get("TOKEN")
+    if token is None:
+        raise kopf.PermanentError("TOKEN not defined")
 
     # Define the object labels
     labels = Labels(
@@ -88,6 +92,7 @@ async def rpz_config_map(**kwargs):
     body = load(
         env.get_template("configmap.yaml.j2").render(
             namespace=namespace,
+            token=token,
             serial=str(int(time.time())),
             **kwargs,
         ),
