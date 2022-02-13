@@ -1,17 +1,5 @@
 ---
 apiVersion: v1
-kind: ConfigMap
-metadata:
-  labels:
-    app.kubernetes.io/component: controller
-    app.kubernetes.io/name: cloudflarerecord
-  name: cloudflarerecord-controller
-  namespace: network-system
-data:
-  namespace: network-system
-
----
-apiVersion: v1
 kind: Secret
 metadata:
   labels:
@@ -21,13 +9,11 @@ metadata:
   namespace: network-system
 stringData:
   token: TOKEN
-
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    configmap.reloader.stakater.com/reload: cloudflarerecord-controller
     secret.reloader.stakater.com/reload: cloudflarerecord-controller
   labels:
     app.kubernetes.io/component: controller
@@ -40,7 +26,7 @@ spec:
       app.kubernetes.io/component: controller
       app.kubernetes.io/name: cloudflarerecord
   strategy:
-    type: Recreate
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -51,16 +37,15 @@ spec:
       - env:
         - name: NAMESPACE
           valueFrom:
-            configMapKeyRef:
-              name: cloudflarerecord-controller
-              key: namespace
+            fieldRef:
+              fieldPath: metadata.namespace
         - name: TOKEN
           valueFrom:
             secretKeyRef:
-              name: cloudflarerecord-controller
               key: token
-        image: illallangi/cloudflarerecord-controller:latest
-        imagePullPolicy: Always
+              name: cloudflarerecord-controller
+        image: ghcr.io/illallangi/cloudflarerecord-controller:latest
+        imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
             path: /healthz
@@ -72,7 +57,6 @@ spec:
           protocol: TCP
       serviceAccount: cloudflarerecord-controller
       serviceAccountName: cloudflarerecord-controller
-
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -82,7 +66,6 @@ metadata:
     app.kubernetes.io/name: cloudflarerecord
   name: cloudflarerecord-controller
   namespace: network-system
-
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -93,7 +76,7 @@ metadata:
   name: cloudflarerecord-controller
 rules:
 - apiGroups:
-  - ''
+  - ""
   resources:
   - configmaps
   verbs:
@@ -108,7 +91,6 @@ rules:
   - get
   - list
   - watch
-
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -120,16 +102,15 @@ metadata:
   namespace: network-system
 rules:
 - apiGroups:
-  - ''
+  - ""
   resources:
-  - configmaps 
+  - configmaps
   verbs:
   - get
   - list
   - watch
   - create
   - patch
-
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -146,7 +127,6 @@ subjects:
 - kind: ServiceAccount
   name: cloudflarerecord-controller
   namespace: network-system
-
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -163,7 +143,6 @@ subjects:
 - kind: ServiceAccount
   name: cloudflarerecord-controller
   namespace: network-system
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -202,7 +181,6 @@ spec:
       - configMap:
           name: cloudflarerecord-ddns
         name: config
-
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -212,7 +190,6 @@ metadata:
     app.kubernetes.io/name: cloudflarerecord
   name: cloudflarerecord-ddns
   namespace: network-system
-
 ---
 apiVersion: v1
 kind: ConfigMap
