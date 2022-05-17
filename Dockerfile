@@ -12,7 +12,7 @@ WORKDIR /usr/src/app
 COPY ./requirements.txt /usr/src/app/requirements.txt
 RUN python -m pip install -r requirements.txt
 
-ADD . /usr/src/app
+COPY . /usr/src/app
 RUN python -m pip install --use-feature=in-tree-build .
 
 CMD kopf run --liveness=http://0.0.0.0:8080/healthz -m cloudflarerecord-controller
