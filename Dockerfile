@@ -13,6 +13,6 @@ COPY ./requirements.txt /usr/src/app/requirements.txt
 RUN python -m pip install -r requirements.txt
 
 COPY . /usr/src/app
-RUN python -m pip install --use-feature=in-tree-build .
+RUN python -m pip install --no-cache-dir --use-feature=in-tree-build .
 
 CMD kopf run --liveness=http://0.0.0.0:8080/healthz -m cloudflarerecord-controller
