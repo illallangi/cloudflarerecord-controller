@@ -168,7 +168,7 @@ spec:
         app.kubernetes.io/name: cloudflarerecord
     spec:
       containers:
-      - image: ghcr.io/joshuaavalon/cloudflare-ddns:2.7.0
+      - image: ghcr.io/joshuaavalon/cloudflare-ddns:2.9.2
         imagePullPolicy: IfNotPresent
         name: cloudflare-ddns
         volumeMounts:
