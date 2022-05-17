@@ -10,7 +10,7 @@ ENV PYTHONUNBUFFERED=1 \
 WORKDIR /usr/src/app
 
 COPY ./requirements.txt /usr/src/app/requirements.txt
-RUN python -m pip install -r requirements.txt
+RUN python -m pip install --no-cache-dir -r requirements.txt
 
 COPY . /usr/src/app
 RUN python -m pip install --no-cache-dir --use-feature=in-tree-build .
